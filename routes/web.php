@@ -15,7 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/chat', 'MessageController@index')->name('chat');
+Route::group(["middleware" => ["auth"]], function(){
+    Route::get('api/chat', 'MessageController@index')->name('apiChat');
+    Route::get('/chat', 'MessageController@show')->name('chat');
+});
+
 
 Auth::routes();
 
