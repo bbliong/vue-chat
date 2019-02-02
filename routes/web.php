@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/chat', 'MessageController@index')->name('chat');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
