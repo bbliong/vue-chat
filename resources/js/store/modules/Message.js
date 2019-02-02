@@ -10,7 +10,6 @@ export const Message = {
         loadMessage({commit}) {
             MessageAPI.getMessage()
                 .then(function(response) {
-                  console.log(response.data)
                     commit('setMessage', response.data);
                 })
                 .catch(function() {

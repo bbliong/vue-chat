@@ -9,6 +9,8 @@ use App\Models\Message;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessagePosted;
+
 
 class messageController extends Controller
 {
@@ -41,10 +43,11 @@ class messageController extends Controller
 
 
         // if(isset($request->file))
-        $insert = Message::create([
+        $insertMessage = Message::create([
            "text"=>$request->message,
            "user_id"=>Auth::id(),
         ]);
+
 
 
         if(isset($request->file)){
@@ -53,13 +56,13 @@ class messageController extends Controller
           $path = $uploadedFile->storeAs("public/files/", $name);
 
           $insertFile = File::Create([
-              'message_id' => $insert->id,
+              'message_id' => $insertMessage->id,
               'title' => $uploadedFile->getClientOriginalName(),
               'file' => "/storage/files/".$name
           ]);
 
           if($insertFile){
-            $insert = Message::where('id', $insert->id)->update([
+            $insert = Message::where('id', $insertMessage->id)->update([
               'file_id' => $insertFile->id
             ]);
           }
@@ -67,8 +70,9 @@ class messageController extends Controller
         }
 
 
-       if($insert){
-          $data = Message::where('id',$insert->id)->with(['File','user'])->get();
+       if($insertMessage){
+            $data = Message::where('id',$insertMessage->id)->with(['File','user'])->get();
+            // event(new MessagePosted($data, Auth::user()));
             return response()->json($data);
        }else{
             return response()->json(["error"], 501);
