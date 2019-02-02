@@ -3,7 +3,7 @@
     <li :class="classToogle(message.user_id)" v-for="(message, index) in messages">
       <div class="head">
         <!-- <span class="time">10:13 AM, Today</span> -->
-        <span class="name">{{message.user['name']}}</span>
+        <span class="name">{{message.user}}</span>
       </div>
       <div class="message">{{message.text}}</div>
       <div class="message-files" v-if="message.file_id !== null">

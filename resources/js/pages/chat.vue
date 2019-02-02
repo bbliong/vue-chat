@@ -23,10 +23,13 @@
       <Message></Message>
   </div>
   <div class="write-form">
-    <textarea placeholder="Type your message" name="e" id="texxt"  rows="2"></textarea>
-    <i class="fa fa-picture-o"></i>
-    <i class="fa fa-file-o"></i>
-    <span class="send">Send</span>
+    <form class="" action="/api/store" method="post">
+      <textarea placeholder="Type your message" name="message" id="texxt"  rows="2"></textarea>
+      <input type="hidden" name="_token" :value="csrf">
+      <i class="fa fa-picture-o"></i>
+      <i class="fa fa-file-o"></i>
+      <button type="submit" class="send">Send</button>
+    </form>
   </div>
 </div>
 </div>
@@ -40,7 +43,8 @@ import Message from '../components/MessageDetails.vue';
 export default {
   data(){
     return{
-        users : [{name:"aria"},{name:"ase"}]
+        users : [{name:"aria"},{name:"ase"}],
+         csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     }
   },
   computed : {

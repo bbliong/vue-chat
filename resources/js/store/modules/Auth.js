@@ -9,6 +9,7 @@ export const Auth = {
         loadAuth({commit}) {
             AuthAPI.getAuth()
                 .then(function(response) {
+                  console.log(response.data)
                     commit('setAuth', response.data);
                 })
                 .catch(function() {

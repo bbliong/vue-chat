@@ -1723,24 +1723,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1750,6 +1732,26 @@ __webpack_require__.r(__webpack_exports__);
         name: "ase"
       }]
     };
+  },
+  computed: {
+    messages: function messages() {
+      return this.$store.getters.getMessage;
+    },
+    Auth: function Auth() {
+      return this.$store.getters.getAuth;
+    }
+  },
+  methods: {
+    classToogle: function classToogle(id) {
+      var kelas;
+      if (id == this.Auth['id']) kelas = "i";else kelas = "friend-with-a-SVAGina";
+      return kelas;
+    }
+  },
+  created: function created() {
+    if (this.$store.getters.getMessage != []) {
+      this.$store.dispatch('loadMessage');
+    }
   }
 });
 
@@ -1836,6 +1838,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1845,12 +1850,23 @@ __webpack_require__.r(__webpack_exports__);
         name: "aria"
       }, {
         name: "ase"
-      }]
+      }],
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     };
+  },
+  computed: {
+    Auth: function Auth() {
+      return this.$store.getters.getAuth;
+    }
   },
   components: {
     User: _components_UserDetails_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     Message: _components_MessageDetails_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  created: function created() {
+    if (this.$store.getters.getAuth != []) {
+      this.$store.dispatch('loadAuth');
+    }
   }
 });
 
@@ -28447,56 +28463,30 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("ul", { staticClass: "messages" }, [
-      _c("li", { staticClass: "i" }, [
+  return _c(
+    "ul",
+    { staticClass: "messages" },
+    _vm._l(_vm.messages, function(message, index) {
+      return _c("li", { class: _vm.classToogle(message.user_id) }, [
         _c("div", { staticClass: "head" }, [
-          _c("span", { staticClass: "time" }, [_vm._v("10:13 AM, Today")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "name" }, [_vm._v("Буль")])
+          _c("span", { staticClass: "name" }, [_vm._v(_vm._s(message.user))])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "message" }, [_vm._v("Привет!")])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "i" }, [
-        _c("div", { staticClass: "head" }, [
-          _c("span", { staticClass: "time" }, [_vm._v("10:13 AM, Today")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "name" }, [_vm._v("Буль")])
-        ]),
+        _c("div", { staticClass: "message" }, [_vm._v(_vm._s(message.text))]),
         _vm._v(" "),
-        _c("div", { staticClass: "message" }, [_vm._v(")")])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "i" }, [
-        _c("div", { staticClass: "head" }, [
-          _c("span", { staticClass: "time" }, [_vm._v("10:14 AM, Today")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "name" }, [_vm._v("Буль")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "message" }, [_vm._v("М не счастья..")])
-      ]),
-      _vm._v(" "),
-      _c("li", { staticClass: "friend-with-a-SVAGina" }, [
-        _c("div", { staticClass: "head" }, [
-          _c("span", { staticClass: "name" }, [_vm._v("Юния")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "time" }, [_vm._v("10:15 AM, Today")])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "message" }, [_vm._v("чего тебе?")])
+        message.file_id !== null
+          ? _c("div", { staticClass: "message-files" }, [
+              _c("a", { attrs: { href: message["file"].file } }, [
+                _vm._v(_vm._s(message["file"].title))
+              ])
+            ])
+          : _vm._e()
       ])
-    ])
-  }
-]
+    }),
+    0
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -28573,11 +28563,47 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("div", { staticClass: "chat" }, [
-        _vm._m(1),
+        _c("div", { staticClass: "top" }, [
+          _vm._m(1),
+          _vm._v(" "),
+          _c("div", { staticClass: "info" }, [
+            _c("div", { staticClass: "name" }, [_vm._v(_vm._s(_vm.Auth.name))]),
+            _vm._v(" "),
+            _c("div", { staticClass: "count" }, [
+              _vm._v("already 1 902 messages")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("i", { staticClass: "fa fa-star" })
+        ]),
         _vm._v(" "),
         _c("div", { staticClass: "wrap-message" }, [_c("Message")], 1),
         _vm._v(" "),
-        _vm._m(2)
+        _c("div", { staticClass: "write-form" }, [
+          _c("form", { attrs: { action: "/api/store", method: "post" } }, [
+            _c("textarea", {
+              attrs: {
+                placeholder: "Type your message",
+                name: "message",
+                id: "texxt",
+                rows: "2"
+              }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              attrs: { type: "hidden", name: "_token" },
+              domProps: { value: _vm.csrf }
+            }),
+            _vm._v(" "),
+            _c("i", { staticClass: "fa fa-picture-o" }),
+            _vm._v(" "),
+            _c("i", { staticClass: "fa fa-file-o" }),
+            _vm._v(" "),
+            _c("button", { staticClass: "send", attrs: { type: "submit" } }, [
+              _vm._v("Send")
+            ])
+          ])
+        ])
       ])
     ])
   ])
@@ -28599,45 +28625,14 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "top" }, [
-      _c("div", { staticClass: "avatar" }, [
-        _c("img", {
-          attrs: {
-            width: "50",
-            height: "50",
-            src: "http://cs625730.vk.me/v625730358/1126a/qEjM1AnybRA.jpg"
-          }
-        })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "info" }, [
-        _c("div", { staticClass: "name" }, [_vm._v("Юния Гапонович")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "count" }, [_vm._v("already 1 902 messages")])
-      ]),
-      _vm._v(" "),
-      _c("i", { staticClass: "fa fa-star" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "write-form" }, [
-      _c("textarea", {
+    return _c("div", { staticClass: "avatar" }, [
+      _c("img", {
         attrs: {
-          placeholder: "Type your message",
-          name: "e",
-          id: "texxt",
-          rows: "2"
+          width: "50",
+          height: "50",
+          src: "http://cs625730.vk.me/v625730358/1126a/qEjM1AnybRA.jpg"
         }
-      }),
-      _vm._v(" "),
-      _c("i", { staticClass: "fa fa-picture-o" }),
-      _vm._v(" "),
-      _c("i", { staticClass: "fa fa-file-o" }),
-      _vm._v(" "),
-      _c("span", { staticClass: "send" }, [_vm._v("Send")])
+      })
     ])
   }
 ]
@@ -40976,6 +40971,43 @@ module.exports = function (module) {
 
 /***/ }),
 
+/***/ "./resources/js/api/auth.js":
+/*!**********************************!*\
+  !*** ./resources/js/api/auth.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config.js */ "./resources/js/config.js");
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  // postLogin: function( email, password){
+  //   return axios.post( SYSTEM_CONFIG.API_URL + '/login',
+  //     {
+  //         email:email,
+  //         password:password
+  //     },{
+  // 		headers: {
+  // 			'Access-Control-Allow-Origin': '*',
+  // 			'Content-Type': 'application/json',
+  //     }
+  // 	}
+  //   );
+  // },
+  getAuth: function getAuth() {
+    return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["SYSTEM_CONFIG"].API_URL + '/api/user', {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/api/message.js":
 /*!*************************************!*\
   !*** ./resources/js/api/message.js ***!
@@ -41001,8 +41033,8 @@ __webpack_require__.r(__webpack_exports__);
   // 	}
   //   );
   // },
-  messsageHistory: function messsageHistory() {
-    return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["SYSTEM_CONFIG"].API_URL + '/chat', {
+  getMessage: function getMessage() {
+    return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["SYSTEM_CONFIG"].API_URL + '/api/chat', {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json'
@@ -41055,7 +41087,7 @@ var app = new Vue({
   components: {
     Chat: _pages_chat_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  Store: _store_store_js__WEBPACK_IMPORTED_MODULE_0__["default"]
+  store: _store_store_js__WEBPACK_IMPORTED_MODULE_0__["default"]
 });
 
 /***/ }),
@@ -41374,6 +41406,48 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/store/modules/Auth.js":
+/*!********************************************!*\
+  !*** ./resources/js/store/modules/Auth.js ***!
+  \********************************************/
+/*! exports provided: Auth */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Auth", function() { return Auth; });
+/* harmony import */ var _api_auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../api/auth.js */ "./resources/js/api/auth.js");
+
+var Auth = {
+  state: {
+    Auth: []
+  },
+  actions: {
+    // Mengambil data dari seluruh pesan
+    loadAuth: function loadAuth(_ref) {
+      var commit = _ref.commit;
+      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].getAuth().then(function (response) {
+        console.log(response.data);
+        commit('setAuth', response.data);
+      }).catch(function () {
+        commit('setAuth', []);
+      });
+    }
+  },
+  mutations: {
+    setAuth: function setAuth(state, data) {
+      state.Auth = data;
+    }
+  },
+  getters: {
+    getAuth: function getAuth(state) {
+      return state.Auth;
+    }
+  }
+};
+
+/***/ }),
+
 /***/ "./resources/js/store/modules/Message.js":
 /*!***********************************************!*\
   !*** ./resources/js/store/modules/Message.js ***!
@@ -41391,10 +41465,10 @@ var Message = {
     message: []
   },
   actions: {
-    // Mengambil data dari seluruh vessels
-    loadVessels: function loadVessels(_ref) {
+    // Mengambil data dari seluruh pesan
+    loadMessage: function loadMessage(_ref) {
       var commit = _ref.commit;
-      VesselAPI.getMessage().then(function (response) {
+      _api_message_js__WEBPACK_IMPORTED_MODULE_0__["default"].getMessage().then(function (response) {
         commit('setMessage', response.data);
       }).catch(function () {
         commit('seteMessage', []);
@@ -41428,15 +41502,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _modules_Message_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/Message.js */ "./resources/js/store/modules/Message.js");
+/* harmony import */ var _modules_Auth_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/Auth.js */ "./resources/js/store/modules/Auth.js");
 
 
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]); //Import Modules Login
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]); //Import Modules
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   modules: {
     //Daftarin Modules Login kedalam Vuex
-    Message: _modules_Message_js__WEBPACK_IMPORTED_MODULE_2__["Message"]
+    Message: _modules_Message_js__WEBPACK_IMPORTED_MODULE_2__["Message"],
+    Auth: _modules_Auth_js__WEBPACK_IMPORTED_MODULE_3__["Auth"]
   }
 }));
 

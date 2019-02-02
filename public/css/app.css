@@ -225,6 +225,18 @@ body {
   border-right: 10px solid transparent;
 }
 
+.ui .wrap-message .messages li .message-files {
+  margin-top: 100px;
+  color: #fff;
+  font-size: 15px;
+  border-radius: 3px;
+  padding: 20px;
+  line-height: 25px;
+  max-width: 500px;
+  word-wrap: break-word;
+  position: relative;
+}
+
 .ui .wrap-message .messages li.friend-with-a-SVAGina .name {
   margin-left: 20px;
 }
@@ -241,6 +253,17 @@ body {
 }
 
 .ui .wrap-message .messages li.friend-with-a-SVAGina .message:before {
+  left: 16px;
+  border-bottom-color: #62bf6e;
+}
+
+.ui .wrap-message .messages li.friend-with-a-SVAGina .message-files {
+  background-color: #62bf6e;
+  float: left;
+  margin-right: -100px;
+}
+
+.ui .wrap-message .messages li.friend-with-a-SVAGina .message-files:before {
   left: 16px;
   border-bottom-color: #62bf6e;
 }
@@ -265,6 +288,17 @@ body {
 }
 
 .ui .wrap-message .messages li.i .message:before {
+  right: 16px;
+  border-bottom-color: #7bc4ef;
+}
+
+.ui .wrap-message .messages li.i .message-files {
+  background-color: #7bc4ef;
+  float: right;
+  margin-right: -100px;
+}
+
+.ui .wrap-message .messages li.i .message-files:before {
   right: 16px;
   border-bottom-color: #7bc4ef;
 }

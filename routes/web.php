@@ -16,7 +16,13 @@ Route::get('/', function () {
 });
 
 Route::group(["middleware" => ["auth"]], function(){
-    Route::get('api/chat', 'MessageController@index')->name('apiChat');
+
+    Route::group(['prefix' => 'api'], function(){
+          Route::get('/chat', 'MessageController@index')->name('apiChat');
+          Route::get('/user', 'MessageController@user')->name('apiUser');
+          Route::post('/store', 'MessageController@store')->name('storeMessage');
+    });
+
     Route::get('/chat', 'MessageController@show')->name('chat');
 });
 
