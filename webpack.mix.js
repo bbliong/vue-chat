@@ -11,5 +11,28 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+
+
+  mix.js('resources/js/app.js', 'public/js')
+      .webpackConfig({
+           module: {
+               rules: [
+                   {
+                       test:/\.jsx?$/,
+                       use: [
+                           {
+                               loader: 'babel-loader',
+                               options: Config.babel()
+                           }
+                       ]
+                   }
+               ]
+           },
+           resolve: {
+             //konfigurasi agar sass bisa diapakai global dalam component
+              alias: {
+                '@': path.resolve('resources/sass')
+              }
+            }
+       })
+     .sass('resources/sass/app.scss', 'public/css');

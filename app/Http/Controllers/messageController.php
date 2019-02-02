@@ -14,4 +14,8 @@ class messageController extends Controller
         $message = Message::with(['File'])->get();
         return $message;
     }
+
+    publici function show(){
+      return view('chat');
+    }
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $guard = [];
+    protected $guarded = [];
 
     public function User(){
     	return $this->belongsTo('App\Models\User');
