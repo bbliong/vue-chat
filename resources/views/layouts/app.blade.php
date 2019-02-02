@@ -61,10 +61,11 @@
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
+
                                 </div>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
                             </li>
                         @endguest
                     </ul>
@@ -76,5 +77,7 @@
             @yield('content')
         </main>
     </div>
+    <script src="//{{ Request::getHost() }}:6001/socket.io/socket.io.js"></script>
+<script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

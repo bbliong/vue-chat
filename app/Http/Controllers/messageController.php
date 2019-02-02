@@ -9,7 +9,7 @@ use App\Models\Message;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Events\MessagePosted;
+use App\Events\MessagePushed;
 
 
 class messageController extends Controller
@@ -71,8 +71,8 @@ class messageController extends Controller
 
 
        if($insertMessage){
-            $data = Message::where('id',$insertMessage->id)->with(['File','user'])->get();
-            // event(new MessagePosted($data, Auth::user()));
+            $data = Message::where('id',$insertMessage->id)->with(['File','user'])->first();
+            event(new MessagePushed($data, Auth::user()));
             return response()->json($data);
        }else{
             return response()->json(["error"], 501);

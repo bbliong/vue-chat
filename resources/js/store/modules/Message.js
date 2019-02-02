@@ -20,7 +20,7 @@ export const Message = {
           commit('setMessageSentStatus', 0);
            MessageAPI.postMessage(data.formData)
                .then(function(response) {
-                   state.message.push(response.data[0]);
+                  // commit('updateMessage', response.data);
                    commit('setMessageSentStatus',1);
                })
                .catch(function() {
@@ -34,6 +34,9 @@ export const Message = {
         },
         setMessageSentStatus(state,data){
           state.messageSentStatus = data;
+        },
+        updateMessage(state,data){
+           state.message.push(data);
         }
     },
     getters: {
