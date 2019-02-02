@@ -15,7 +15,7 @@ class messageController extends Controller
         return $message;
     }
 
-    publici function show(){
+    public function show(){
       return view('chat');
     }
 }
