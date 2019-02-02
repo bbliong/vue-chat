@@ -6,12 +6,17 @@
  */
 
 require('./bootstrap');
-
-import Vue from 'vue'
-import VueChatScroll from 'vue-chat-scroll'
-Vue.use(VueChatScroll)
-
 window.Vue = require('vue');
+import VueChatScroll from 'vue-chat-scroll'
+import Toaster from 'v-toaster'
+import 'v-toaster/dist/v-toaster.css'
+
+
+
+
+
+
+
 import store from './store/store.js'
 import Chat from './pages/chat.vue'
 /**
@@ -31,7 +36,11 @@ import Chat from './pages/chat.vue'
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
+ Vue.use(VueChatScroll)
+ // You need a specific loader for CSS files like https://github.com/webpack/css-loader
+ // optional set default imeout, the default is 10000 (10 seconds).
+ Vue.use(Toaster, {timeout: 5000})
+ 
 const app = new Vue({
     el: '#app',
     components: {

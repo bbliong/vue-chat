@@ -33,7 +33,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                      <li class="active" style="padding-top:2px;color:#222;font-weight:bold;"><a href="/chat">Chat</a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -61,10 +61,11 @@
                                         {{ __('Logout') }}
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
+
                                 </div>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    @csrf
+                                </form>
                             </li>
                         @endguest
                     </ul>
@@ -76,5 +77,7 @@
             @yield('content')
         </main>
     </div>
+    <script src="//{{ Request::getHost() }}:6001/socket.io/socket.io.js"></script>
+<script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

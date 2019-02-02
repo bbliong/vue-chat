@@ -21,6 +21,7 @@ Route::group(["middleware" => ["auth"]], function(){
           Route::get('/chat', 'MessageController@index')->name('apiChat');
           Route::get('/user', 'MessageController@user')->name('apiUser');
           Route::post('/store', 'MessageController@store')->name('storeMessage');
+          Route::post('/typing', 'MessageController@typing')->name('typing');
     });
 
     Route::get('/chat', 'MessageController@show')->name('chat');
