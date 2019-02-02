@@ -28585,7 +28585,7 @@ var render = function() {
     _vm._l(_vm.messages, function(message, index) {
       return _c(
         "li",
-        { class: _vm.classToogle(message.user_id), attrs: { id: "" } },
+        { class: _vm.classToogle(message.user_id), attrs: { id: "message" } },
         [
           _c("div", { staticClass: "head" }, [
             _c("span", { staticClass: "name" }, [
@@ -41670,6 +41670,7 @@ var Message = {
           dispatch = _ref2.dispatch;
       commit('setMessageSentStatus', 0);
       _api_message_js__WEBPACK_IMPORTED_MODULE_0__["default"].postMessage(data.formData).then(function (response) {
+        state.message.push(response.data[0]);
         commit('setMessageSentStatus', 1);
       }).catch(function () {
         commit('setMessageSentStatus', 2);

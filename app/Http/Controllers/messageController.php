@@ -63,10 +63,13 @@ class messageController extends Controller
               'file_id' => $insertFile->id
             ]);
           }
+
         }
 
+
        if($insert){
-            return response()->json($insert);
+          $data = Message::where('id',$insert->id)->with(['File','user'])->get();
+            return response()->json($data);
        }else{
             return response()->json(["error"], 501);
        }

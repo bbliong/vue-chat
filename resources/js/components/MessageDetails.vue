@@ -1,6 +1,6 @@
 <template >
   <ul class="messages" v-chat-scroll>
-    <li :class="classToogle(message.user_id)" v-for="(message, index) in messages" id="">
+    <li :class="classToogle(message.user_id)" v-for="(message, index) in messages" id="message">
       <div class="head">
         <!-- <span class="time">10:13 AM, Today</span> -->
         <span class="name">{{(message.user['id'] !== Auth.id)?message.user['name']:'Me'}}</span>
