@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 
 use Validator;
+use App\Helper\Helper;
 use App\Models\Message;
-use App\Models\Files;
+use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,7 @@ class messageController extends Controller
     public function index(){
         //Geting All Messages
 
-        $message = Message::with(['File'])->get();
+        $message = Message::with(['File','user'])->get();
         return $message;
     }
 
@@ -33,14 +34,36 @@ class messageController extends Controller
            'message' => 'required',
         ]);
 
+
         if($validator->fails()) {
           return response()->json(["error"], 501);
         }
 
+
+        // if(isset($request->file))
         $insert = Message::create([
            "text"=>$request->message,
            "user_id"=>Auth::id(),
         ]);
+
+
+        if(isset($request->file)){
+          $uploadedFile = $request->file('file');
+          $name = Auth::id() . "_".Helper::generateRandomString(10) . "." . $request->file('file')->getClientOriginalExtension();
+          $path = $uploadedFile->storeAs("public/files/", $name);
+
+          $insertFile = File::Create([
+              'message_id' => $insert->id,
+              'title' => $uploadedFile->getClientOriginalName(),
+              'file' => "/storage/files/".$name
+          ]);
+
+          if($insertFile){
+            $insert = Message::where('id', $insert->id)->update([
+              'file_id' => $insertFile->id
+            ]);
+          }
+        }
 
        if($insert){
             return response()->json($insert);

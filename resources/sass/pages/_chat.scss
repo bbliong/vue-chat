@@ -224,7 +224,10 @@ body {
 	        max-width: 500px;
 	        word-wrap: break-word;
 	        position: relative;
-
+          .img-chat{
+            width: 200px;
+            height: auto;
+          }
 	      }
 	      &.friend-with-a-SVAGina {
 	        .name {
@@ -246,7 +249,7 @@ body {
           .message-files {
 	          background-color: #62bf6e;
 	          float: left;
-                        margin-right: -100px;
+                        margin-left: -100px;
 	          &:before {
 	            left: 16px;
 	            border-bottom-color: #62bf6e;

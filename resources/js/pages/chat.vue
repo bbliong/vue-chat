@@ -23,12 +23,13 @@
       <Message></Message>
   </div>
   <div class="write-form">
-    <form class="" action="/api/store" method="post">
-      <textarea placeholder="Type your message" name="message" id="texxt"  rows="2"></textarea>
+    <form class="" v-on:submit.prevent="submitLogin" enctype="multipart/form-data" accept="image/*">
+      <textarea placeholder="Type your message" name="message" v-model="message" rows="2"></textarea>
       <input type="hidden" name="_token" :value="csrf">
+      <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
       <i class="fa fa-picture-o"></i>
       <i class="fa fa-file-o"></i>
-      <button type="submit" class="send">Send</button>
+      <input type="submit" class="send" value="send">
     </form>
   </div>
 </div>
@@ -44,17 +45,30 @@ export default {
   data(){
     return{
         users : [{name:"aria"},{name:"ase"}],
-         csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        message : '',
+        file: ''
     }
   },
   computed : {
-    Auth() {
-        return this.$store.getters.getAuth;
-    },
+      Auth() {
+          return this.$store.getters.getAuth;
+      },
   },
   components: {
-        User : User,
-        Message : Message,
+      User : User,
+      Message : Message,
+  },
+  methods :{
+    submitLogin(){
+       let formData = new FormData();
+       formData.append('message', this.message);
+       formData.append('file', this.file);
+       this.$store.dispatch('postMessage', {formData})
+    },
+    handleFileUpload(){
+      this.file = this.$refs.file.files[0];
+    }
   },
    created() {
     if (this.$store.getters.getAuth != []){

@@ -237,6 +237,11 @@ body {
   position: relative;
 }
 
+.ui .wrap-message .messages li .message-files .img-chat {
+  width: 200px;
+  height: auto;
+}
+
 .ui .wrap-message .messages li.friend-with-a-SVAGina .name {
   margin-left: 20px;
 }
@@ -260,7 +265,7 @@ body {
 .ui .wrap-message .messages li.friend-with-a-SVAGina .message-files {
   background-color: #62bf6e;
   float: left;
-  margin-right: -100px;
+  margin-left: -100px;
 }
 
 .ui .wrap-message .messages li.friend-with-a-SVAGina .message-files:before {

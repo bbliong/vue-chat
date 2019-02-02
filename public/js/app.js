@@ -1723,6 +1723,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1739,8 +1745,18 @@ __webpack_require__.r(__webpack_exports__);
     },
     Auth: function Auth() {
       return this.$store.getters.getAuth;
+    },
+    messageStatus: function messageStatus() {
+      return this.$store.getters.getMessageStatus;
     }
   },
+  // watch : {
+  //   messageStatus(val){
+  //     if(val == 1) {
+  //
+  //     }
+  //   }
+  // },
   methods: {
     classToogle: function classToogle(id) {
       var kelas;
@@ -1841,6 +1857,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1851,7 +1868,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         name: "ase"
       }],
-      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      message: '',
+      file: ''
     };
   },
   computed: {
@@ -1862,6 +1881,19 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     User: _components_UserDetails_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     Message: _components_MessageDetails_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  methods: {
+    submitLogin: function submitLogin() {
+      var formData = new FormData();
+      formData.append('message', this.message);
+      formData.append('file', this.file);
+      this.$store.dispatch('postMessage', {
+        formData: formData
+      });
+    },
+    handleFileUpload: function handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+    }
   },
   created: function created() {
     if (this.$store.getters.getAuth != []) {
@@ -28448,6 +28480,87 @@ exports.clearImmediate = typeof self !== "undefined" && self.clearImmediate || t
 
 /***/ }),
 
+/***/ "./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+(function (global, factory) {
+  ( false ? undefined : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : undefined;
+})(this, function () {
+  'use strict';
+  /**
+  * @name VueJS vChatScroll (vue-chat-scroll)
+  * @description Monitors an element and scrolls to the bottom if a new child is added
+  * @author Theodore Messinezis <theo@theomessin.com>
+  * @file v-chat-scroll  directive definition
+  */
+
+  var scrollToBottom = function scrollToBottom(el, smooth) {
+    if (typeof el.scroll === "function") {
+      el.scroll({
+        top: el.scrollHeight,
+        behavior: smooth ? 'smooth' : 'instant'
+      });
+    } else {
+      el.scrollTop = el.scrollHeight;
+    }
+  };
+
+  var vChatScroll = {
+    bind: function bind(el, binding) {
+      var scrolled = false;
+      el.addEventListener('scroll', function (e) {
+        scrolled = el.scrollTop + el.clientHeight + 1 < el.scrollHeight;
+      });
+      new MutationObserver(function (e) {
+        var config = binding.value || {};
+        var pause = config.always === false && scrolled;
+
+        if (config.scrollonremoved) {
+          if (pause || e[e.length - 1].addedNodes.length != 1 && e[e.length - 1].removedNodes.length != 1) return;
+        } else {
+          if (pause || e[e.length - 1].addedNodes.length != 1) return;
+        }
+
+        scrollToBottom(el, config.smooth);
+      }).observe(el, {
+        childList: true,
+        subtree: true
+      });
+    },
+    inserted: scrollToBottom
+  };
+  /**
+  * @name VueJS vChatScroll (vue-chat-scroll)
+  * @description Monitors an element and scrolls to the bottom if a new child is added
+  * @author Theodore Messinezis <theo@theomessin.com>
+  * @file vue-chat-scroll plugin definition
+  */
+
+  var VueChatScroll = {
+    install: function install(Vue, options) {
+      Vue.directive('chat-scroll', vChatScroll);
+    }
+  };
+
+  if (typeof window !== 'undefined' && window.Vue) {
+    window.Vue.use(VueChatScroll);
+  }
+
+  return VueChatScroll;
+});
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MessageDetails.vue?vue&type=template&id=4616cc34&":
 /*!*****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MessageDetails.vue?vue&type=template&id=4616cc34& ***!
@@ -28465,23 +28578,57 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "ul",
-    { staticClass: "messages" },
+    {
+      directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
+      staticClass: "messages"
+    },
     _vm._l(_vm.messages, function(message, index) {
-      return _c("li", { class: _vm.classToogle(message.user_id) }, [
-        _c("div", { staticClass: "head" }, [
-          _c("span", { staticClass: "name" }, [_vm._v(_vm._s(message.user))])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "message" }, [_vm._v(_vm._s(message.text))]),
-        _vm._v(" "),
-        message.file_id !== null
-          ? _c("div", { staticClass: "message-files" }, [
-              _c("a", { attrs: { href: message["file"].file } }, [
-                _vm._v(_vm._s(message["file"].title))
-              ])
+      return _c(
+        "li",
+        { class: _vm.classToogle(message.user_id), attrs: { id: "" } },
+        [
+          _c("div", { staticClass: "head" }, [
+            _c("span", { staticClass: "name" }, [
+              _vm._v(
+                _vm._s(
+                  message.user["id"] !== _vm.Auth.id
+                    ? message.user["name"]
+                    : "Me"
+                )
+              )
             ])
-          : _vm._e()
-      ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "message" }, [_vm._v(_vm._s(message.text))]),
+          _vm._v(" "),
+          message.file_id !== null
+            ? _c("div", { staticClass: "message-files" }, [
+                message["file"].file.substring(
+                  message["file"].file.length - 3,
+                  message["file"].file.length
+                ) == "jpg" ||
+                message["file"].file.substring(
+                  message["file"].file.length - 3,
+                  message["file"].file.length
+                ) === "png"
+                  ? _c("section", [
+                      _c("img", {
+                        staticClass: "img-chat",
+                        attrs: {
+                          src: message["file"].file,
+                          alt: message["file"].title
+                        }
+                      })
+                    ])
+                  : _c("section", [
+                      _c("a", { attrs: { href: message["file"].file } }, [
+                        _vm._v(_vm._s(message["file"].title))
+                      ])
+                    ])
+              ])
+            : _vm._e()
+        ]
+      )
     }),
     0
   )
@@ -28580,29 +28727,68 @@ var render = function() {
         _c("div", { staticClass: "wrap-message" }, [_c("Message")], 1),
         _vm._v(" "),
         _c("div", { staticClass: "write-form" }, [
-          _c("form", { attrs: { action: "/api/store", method: "post" } }, [
-            _c("textarea", {
-              attrs: {
-                placeholder: "Type your message",
-                name: "message",
-                id: "texxt",
-                rows: "2"
+          _c(
+            "form",
+            {
+              attrs: { enctype: "multipart/form-data", accept: "image/*" },
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.submitLogin($event)
+                }
               }
-            }),
-            _vm._v(" "),
-            _c("input", {
-              attrs: { type: "hidden", name: "_token" },
-              domProps: { value: _vm.csrf }
-            }),
-            _vm._v(" "),
-            _c("i", { staticClass: "fa fa-picture-o" }),
-            _vm._v(" "),
-            _c("i", { staticClass: "fa fa-file-o" }),
-            _vm._v(" "),
-            _c("button", { staticClass: "send", attrs: { type: "submit" } }, [
-              _vm._v("Send")
-            ])
-          ])
+            },
+            [
+              _c("textarea", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.message,
+                    expression: "message"
+                  }
+                ],
+                attrs: {
+                  placeholder: "Type your message",
+                  name: "message",
+                  rows: "2"
+                },
+                domProps: { value: _vm.message },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.message = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                attrs: { type: "hidden", name: "_token" },
+                domProps: { value: _vm.csrf }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                ref: "file",
+                attrs: { type: "file", id: "file" },
+                on: {
+                  change: function($event) {
+                    _vm.handleFileUpload()
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("i", { staticClass: "fa fa-picture-o" }),
+              _vm._v(" "),
+              _c("i", { staticClass: "fa fa-file-o" }),
+              _vm._v(" "),
+              _c("input", {
+                staticClass: "send",
+                attrs: { type: "submit", value: "send" }
+              })
+            ]
+          )
         ])
       ])
     ])
@@ -41020,19 +41206,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config.js */ "./resources/js/config.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  // postLogin: function( email, password){
-  //   return axios.post( SYSTEM_CONFIG.API_URL + '/login',
-  //     {
-  //         email:email,
-  //         password:password
-  //     },{
-  // 		headers: {
-  // 			'Access-Control-Allow-Origin': '*',
-  // 			'Content-Type': 'application/json',
-  //     }
-  // 	}
-  //   );
-  // },
+  postMessage: function postMessage(formData) {
+    return axios.post(_config_js__WEBPACK_IMPORTED_MODULE_0__["SYSTEM_CONFIG"].API_URL + '/api/store', formData, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
   getMessage: function getMessage() {
     return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["SYSTEM_CONFIG"].API_URL + '/api/chat', {
       headers: {
@@ -41054,8 +41235,12 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _store_store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./store/store.js */ "./resources/js/store/store.js");
-/* harmony import */ var _pages_chat_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pages/chat.vue */ "./resources/js/pages/chat.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue_chat_scroll__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-chat-scroll */ "./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js");
+/* harmony import */ var vue_chat_scroll__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_chat_scroll__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _store_store_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./store/store.js */ "./resources/js/store/store.js");
+/* harmony import */ var _pages_chat_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pages/chat.vue */ "./resources/js/pages/chat.vue");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -41063,6 +41248,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
+
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_chat_scroll__WEBPACK_IMPORTED_MODULE_1___default.a);
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 
 
@@ -41082,12 +41270,12 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-var app = new Vue({
+var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   components: {
-    Chat: _pages_chat_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    Chat: _pages_chat_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
-  store: _store_store_js__WEBPACK_IMPORTED_MODULE_0__["default"]
+  store: _store_store_js__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
 
 /***/ }),
@@ -41462,27 +41650,46 @@ __webpack_require__.r(__webpack_exports__);
 
 var Message = {
   state: {
-    message: []
+    message: [],
+    messageSentStatus: 0
   },
   actions: {
     // Mengambil data dari seluruh pesan
     loadMessage: function loadMessage(_ref) {
       var commit = _ref.commit;
       _api_message_js__WEBPACK_IMPORTED_MODULE_0__["default"].getMessage().then(function (response) {
+        console.log(response.data);
         commit('setMessage', response.data);
       }).catch(function () {
         commit('seteMessage', []);
+      });
+    },
+    postMessage: function postMessage(_ref2, data) {
+      var commit = _ref2.commit,
+          state = _ref2.state,
+          dispatch = _ref2.dispatch;
+      commit('setMessageSentStatus', 0);
+      _api_message_js__WEBPACK_IMPORTED_MODULE_0__["default"].postMessage(data.formData).then(function (response) {
+        commit('setMessageSentStatus', 1);
+      }).catch(function () {
+        commit('setMessageSentStatus', 2);
       });
     }
   },
   mutations: {
     setMessage: function setMessage(state, data) {
       state.message = data;
+    },
+    setMessageSentStatus: function setMessageSentStatus(state, data) {
+      state.messageSentStatus = data;
     }
   },
   getters: {
     getMessage: function getMessage(state) {
       return state.message;
+    },
+    getMessageStatus: function getMessageStatus(state) {
+      return state.messageSentStatus;
     }
   }
 };
