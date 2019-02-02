@@ -25,7 +25,7 @@ Ada beberapa settingan tambahan di ENV, duplicate saja dari yang .env.example, l
 ```bash
 #  php artisan migrate => Migrate struktur database
 #  php artisan storage:link => membuat link untuk upload file
-#  php artisan key:generate => membuat link untuk upload file
+#  php artisan key:generate => membuat key
 ```
 
 # Runing Program
