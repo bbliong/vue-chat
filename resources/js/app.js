@@ -8,7 +8,7 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-import Store from './store/store.js'
+import store from './store/store.js'
 import Chat from './pages/chat.vue'
 /**
  * The following block of code may be used to automatically register your
@@ -33,5 +33,5 @@ const app = new Vue({
     components: {
       Chat : Chat,
     },
-    Store,
+    store,
 });

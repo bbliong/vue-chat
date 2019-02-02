@@ -14,7 +14,7 @@
       <img width="50" height="50" src="http://cs625730.vk.me/v625730358/1126a/qEjM1AnybRA.jpg">
     </div>
     <div class="info">
-      <div class="name">Юния Гапонович</div>
+      <div class="name">{{Auth.name}}</div>
       <div class="count">already 1 902 messages</div>
     </div>
     <i class="fa fa-star"></i>
@@ -43,10 +43,20 @@ export default {
         users : [{name:"aria"},{name:"ase"}]
     }
   },
+  computed : {
+    Auth() {
+        return this.$store.getters.getAuth;
+    },
+  },
   components: {
         User : User,
         Message : Message,
-    },
+  },
+   created() {
+    if (this.$store.getters.getAuth != []){
+          this.$store.dispatch('loadAuth');
+    }
+  }
   }
 </script>
 

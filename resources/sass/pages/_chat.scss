@@ -213,6 +213,19 @@ body {
 	          border-right: 10px solid transparent;
 	        }
 	      }
+        .message-files {
+          margin-top: 100px;
+
+	        color: #fff;
+	        font-size: 15px;
+	        border-radius: 3px;
+	        padding: 20px;
+	        line-height: 25px;
+	        max-width: 500px;
+	        word-wrap: break-word;
+	        position: relative;
+
+	      }
 	      &.friend-with-a-SVAGina {
 	        .name {
 	          margin-left: 20px;
@@ -225,6 +238,15 @@ body {
 	        .message {
 	          background-color: #62bf6e;
 	          float: left;
+	          &:before {
+	            left: 16px;
+	            border-bottom-color: #62bf6e;
+	          }
+	        }
+          .message-files {
+	          background-color: #62bf6e;
+	          float: left;
+                        margin-right: -100px;
 	          &:before {
 	            left: 16px;
 	            border-bottom-color: #62bf6e;
@@ -246,6 +268,15 @@ body {
 	        .message {
 	          background-color: #7bc4ef;
 	          float: right;
+	          &:before {
+	            right: 16px;
+	            border-bottom-color: #7bc4ef;
+	          }
+	        }
+          .message-files {
+	          background-color: #7bc4ef;
+	          float: right;
+                        margin-right: -100px;
 	          &:before {
 	            right: 16px;
 	            border-bottom-color: #7bc4ef;

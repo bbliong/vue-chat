@@ -5,9 +5,9 @@ export const Message = {
         message :[],
     },
     actions: {
-      // Mengambil data dari seluruh vessels
-        loadVessels({commit}) {
-            VesselAPI.getMessage()
+      // Mengambil data dari seluruh pesan
+        loadMessage({commit}) {
+            MessageAPI.getMessage()
                 .then(function(response) {
                     commit('setMessage', response.data);
                 })
@@ -24,6 +24,6 @@ export const Message = {
     getters: {
         getMessage(state){
           return state.message;
-        },
+        }
     }
 }

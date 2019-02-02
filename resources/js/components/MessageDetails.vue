@@ -1,32 +1,14 @@
 <template >
   <ul class="messages">
-    <li class="i">
+    <li :class="classToogle(message.user_id)" v-for="(message, index) in messages">
       <div class="head">
-        <span class="time">10:13 AM, Today</span>
-        <span class="name">Буль</span>
+        <!-- <span class="time">10:13 AM, Today</span> -->
+        <span class="name">{{message.user['name']}}</span>
       </div>
-      <div class="message">Привет!</div>
-    </li>
-    <li class="i">
-      <div class="head">
-        <span class="time">10:13 AM, Today</span>
-        <span class="name">Буль</span>
+      <div class="message">{{message.text}}</div>
+      <div class="message-files" v-if="message.file_id !== null">
+        <a :href="message['file'].file">{{message["file"].title}}</a>
       </div>
-      <div class="message">)</div>
-    </li>
-    <li class="i">
-      <div class="head">
-        <span class="time">10:14 AM, Today</span>
-        <span class="name">Буль</span>
-      </div>
-      <div class="message">М не счастья..</div>
-    </li>
-    <li class="friend-with-a-SVAGina">
-      <div class="head">
-        <span class="name">Юния</span>
-        <span class="time">10:15 AM, Today</span>
-      </div>
-      <div class="message">чего тебе?</div>
     </li>
   </ul>
 </template>
@@ -38,6 +20,30 @@ export default {
         users : [{name:"aria"},{name:"ase"}]
     }
   },
+  computed :{
+    messages() {
+        return this.$store.getters.getMessage;
+    },
+    Auth() {
+        return this.$store.getters.getAuth;
+    },
+  },
+  methods :{
+    classToogle : function(id){
+        var kelas
+        if (id == this.Auth['id'] )
+          kelas = "i"
+        else
+          kelas = "friend-with-a-SVAGina"
+
+          return kelas
+      },
+  },
+  created() {
+    if (this.$store.getters.getMessage != []){
+          this.$store.dispatch('loadMessage');
+    }
+  }
 }
 </script>
 

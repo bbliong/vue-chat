@@ -14,14 +14,12 @@ export default {
   	// 	}
     //   );
     // },
-    getMessage : function(){
-  		return axios.get(SYSTEM_CONFIG.API_URL + '/api/chat',{
+    getAuth : function(){
+  		return axios.get(SYSTEM_CONFIG.API_URL + '/api/user',{
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
         }
       })
   	},
-
-
 }
