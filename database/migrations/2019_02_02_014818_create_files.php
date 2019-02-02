@@ -16,11 +16,11 @@ class CreateFiles extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('message_id')->unsigned();
-            $table->string('title',30);
+            $table->text('title');
             $table->text('file');
             $table->timestamps();
 
-          
+
         });
     }
 
