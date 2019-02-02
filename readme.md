@@ -12,7 +12,7 @@ kalau sudah diinstall bisa lanjut ke tahap selanjutnya yaitu clone project ini d
 #  cd vue-chat
 #  composer install
 #  npm install
-#  Hapus laravel-echo-server.json - lalu init ulang dengan cara laravel-echo-init
+#  Hapus laravel-echo-server.json - lalu init ulang dengan cara laravel-echo-server init
 #  untuk init bisa ikuti defaultnya, di Yes kan semua, untuk url ganti menjadi http://localhost:8000 jika menggunakan artisan
 ```
 
@@ -25,6 +25,7 @@ Ada beberapa settingan tambahan di ENV, duplicate saja dari yang .env.example, l
 ```bash
 #  php artisan migrate => Migrate struktur database
 #  php artisan storage:link => membuat link untuk upload file
+#  php artisan key:generate => membuat link untuk upload file
 ```
 
 # Runing Program
