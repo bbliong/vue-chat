@@ -33,7 +33,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                      <li class="active" style="padding-top:2px;color:#222;font-weight:bold;"><a href="/chat">Chat</a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

@@ -9,6 +9,7 @@ use App\Models\Message;
 use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessageTyping;
 use App\Events\MessagePushed;
 
 
@@ -29,6 +30,11 @@ class messageController extends Controller
         //Confirmation user
         $user = Auth::user();
         return $user;
+    }
+
+    public function typing(Request $request){
+      event(new MessageTyping($request->status, Auth::user()));
+        return response()->json(["Success"], 200);
     }
 
     public function store(Request $request){

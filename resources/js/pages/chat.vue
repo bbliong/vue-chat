@@ -1,6 +1,6 @@
 <template>
   <div id="app-layout">
-    <div class="ui">
+    <div class="ui" style="position:relative">
   <div class="left-menu">
     <form action="#" class="search">
       <input placeholder="search..." type="search" name="" id="">
@@ -17,13 +17,16 @@
       <div class="name">{{Auth.name}}</div>
       <div class="count">{{messageLenght}} messages</div>
     </div>
-    <i class="fa fa-star"></i>
   </div>
   <div class="wrap-message">
       <Message></Message>
   </div>
   <div class="write-form">
-    <form class="" v-on:submit.prevent="submitLogin" enctype="multipart/form-data" accept="image/*">
+          <span v-for="(user, index) in isTyping" :key="index" v-if="Auth.id !== user.id">
+         {{user.name}} Is typing .....
+          </span>
+
+    <form class="" v-on:submit.prevent="submitMessage" enctype="multipart/form-data" accept="image/*">
       <textarea placeholder="Type your message" name="message" v-model="message" rows="2"></textarea>
       <input type="hidden" name="_token" :value="csrf">
 
@@ -33,7 +36,7 @@
       </label>
       <!-- <i class="fa fa-picture-o"></i>
      -->
-      <input type="submit" class="myButton" value="send" style="float: right;position: absolute;right: 30px;">
+      <input type="submit" class="send asd" value="send" style=";position: absolute;right: 30px;">
     </form>
   </div>
 </div>
@@ -53,7 +56,8 @@ export default {
           csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
           message : '',
           file: '',
-          usersOnline :[]
+          usersOnline :[],
+          isTyping : []
       }
     },
     computed : {
@@ -67,27 +71,37 @@ export default {
           return this.messages.length
         }
     },
+    watch :{
+      message(val){
+        return this.$store.dispatch('typing', {val});
+      },
+      isTyping(val){
+        console.log(val)
+      }
+    },
     components: {
         User : User,
         Message : Message,
     },
     methods :{
-      submitLogin(){
+      submitMessage(){
          let formData = new FormData();
          formData.append('message', this.message);
          formData.append('file', this.file);
          this.$store.dispatch('postMessage', {formData})
+         this.message = ''
+         this.file = ''
       },
       handleFileUpload(){
         this.file = this.$refs.file.files[0];
       },
       inArray: function(needle, haystack) {
-        var length = haystack.length;
-        for(var i = 0; i < length; i++) {
-            if(haystack[i].id == needle.id) return true;
-        }
-        return false;
-    }
+          var length = haystack.length;
+          for(var i = 0; i < length; i++) {
+              if(haystack[i].id == needle.id) return true;
+          }
+          return false;
+      }
     },
      created() {
       if (this.$store.getters.getAuth != []){
@@ -109,7 +123,18 @@ export default {
         })
           .listen('MessagePushed', (e)=>{
             this.$store.commit('updateMessage', e.message);
-          });
+            // let index = this.isTyping.indexOf(e.user);
+            // this.isTyping.splice(index, 1);
+          })
+          .listen('MessageTyping', (e) => {
+              if(!this.inArray(e.user,this.isTyping)) {
+                this.isTyping.push(e.user);
+              }
+              else {
+                let index = this.isTyping.indexOf(e.user);
+                this.isTyping.splice(index, 1);
+              }
+           });
     }
   }
 </script>

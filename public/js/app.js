@@ -1865,6 +1865,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
@@ -1879,7 +1882,8 @@ __webpack_require__.r(__webpack_exports__);
       csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
       message: '',
       file: '',
-      usersOnline: []
+      usersOnline: [],
+      isTyping: []
     };
   },
   computed: {
@@ -1893,18 +1897,30 @@ __webpack_require__.r(__webpack_exports__);
       return this.messages.length;
     }
   },
+  watch: {
+    message: function message(val) {
+      return this.$store.dispatch('typing', {
+        val: val
+      });
+    },
+    isTyping: function isTyping(val) {
+      console.log(val);
+    }
+  },
   components: {
     User: _components_UserDetails_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     Message: _components_MessageDetails_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   methods: {
-    submitLogin: function submitLogin() {
+    submitMessage: function submitMessage() {
       var formData = new FormData();
       formData.append('message', this.message);
       formData.append('file', this.file);
       this.$store.dispatch('postMessage', {
         formData: formData
       });
+      this.message = '';
+      this.file = '';
     },
     handleFileUpload: function handleFileUpload() {
       this.file = this.$refs.file.files[0];
@@ -1943,7 +1959,17 @@ __webpack_require__.r(__webpack_exports__);
 
       _this.usersOnline.splice(index, 1);
     }).listen('MessagePushed', function (e) {
-      _this.$store.commit('updateMessage', e.message);
+      _this.$store.commit('updateMessage', e.message); // let index = this.isTyping.indexOf(e.user);
+      // this.isTyping.splice(index, 1);
+
+    }).listen('MessageTyping', function (e) {
+      if (!_this.inArray(e.user, _this.isTyping)) {
+        _this.isTyping.push(e.user);
+      } else {
+        var index = _this.isTyping.indexOf(e.user);
+
+        _this.isTyping.splice(index, 1);
+      }
     });
   }
 });
@@ -30265,7 +30291,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { id: "app-layout" } }, [
-    _c("div", { staticClass: "ui" }, [
+    _c("div", { staticClass: "ui", staticStyle: { position: "relative" } }, [
       _c(
         "div",
         { staticClass: "left-menu" },
@@ -30287,83 +30313,94 @@ var render = function() {
             _c("div", { staticClass: "count" }, [
               _vm._v(_vm._s(_vm.messageLenght) + " messages")
             ])
-          ]),
-          _vm._v(" "),
-          _c("i", { staticClass: "fa fa-star" })
+          ])
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "wrap-message" }, [_c("Message")], 1),
         _vm._v(" "),
-        _c("div", { staticClass: "write-form" }, [
-          _c(
-            "form",
-            {
-              attrs: { enctype: "multipart/form-data", accept: "image/*" },
-              on: {
-                submit: function($event) {
-                  $event.preventDefault()
-                  return _vm.submitLogin($event)
-                }
-              }
-            },
-            [
-              _c("textarea", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.message,
-                    expression: "message"
-                  }
-                ],
-                attrs: {
-                  placeholder: "Type your message",
-                  name: "message",
-                  rows: "2"
-                },
-                domProps: { value: _vm.message },
+        _c(
+          "div",
+          { staticClass: "write-form" },
+          [
+            _vm._l(_vm.isTyping, function(user, index) {
+              return _vm.Auth.id !== user.id
+                ? _c("span", { key: index }, [
+                    _vm._v(
+                      "\n         " +
+                        _vm._s(user.name) +
+                        " Is typing .....\n          "
+                    )
+                  ])
+                : _vm._e()
+            }),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: { enctype: "multipart/form-data", accept: "image/*" },
                 on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.message = $event.target.value
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.submitMessage($event)
                   }
                 }
-              }),
-              _vm._v(" "),
-              _c("input", {
-                attrs: { type: "hidden", name: "_token" },
-                domProps: { value: _vm.csrf }
-              }),
-              _vm._v(" "),
-              _c("label", { attrs: { for: "file" } }, [
-                _vm._m(2),
+              },
+              [
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.message,
+                      expression: "message"
+                    }
+                  ],
+                  attrs: {
+                    placeholder: "Type your message",
+                    name: "message",
+                    rows: "2"
+                  },
+                  domProps: { value: _vm.message },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.message = $event.target.value
+                    }
+                  }
+                }),
                 _vm._v(" "),
                 _c("input", {
-                  ref: "file",
-                  staticStyle: { display: "none" },
-                  attrs: { type: "file", id: "file" },
-                  on: {
-                    change: function($event) {
-                      _vm.handleFileUpload()
+                  attrs: { type: "hidden", name: "_token" },
+                  domProps: { value: _vm.csrf }
+                }),
+                _vm._v(" "),
+                _c("label", { attrs: { for: "file" } }, [
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _c("input", {
+                    ref: "file",
+                    staticStyle: { display: "none" },
+                    attrs: { type: "file", id: "file" },
+                    on: {
+                      change: function($event) {
+                        _vm.handleFileUpload()
+                      }
                     }
-                  }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "send asd",
+                  staticStyle: { position: "absolute", right: "30px" },
+                  attrs: { type: "submit", value: "send" }
                 })
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "myButton",
-                staticStyle: {
-                  float: "right",
-                  position: "absolute",
-                  right: "30px"
-                },
-                attrs: { type: "submit", value: "send" }
-              })
-            ]
-          )
-        ])
+              ]
+            )
+          ],
+          2
+        )
       ])
     ])
   ])
@@ -42760,19 +42797,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _config_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config.js */ "./resources/js/config.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  // postLogin: function( email, password){
-  //   return axios.post( SYSTEM_CONFIG.API_URL + '/login',
-  //     {
-  //         email:email,
-  //         password:password
-  //     },{
-  // 		headers: {
-  // 			'Access-Control-Allow-Origin': '*',
-  // 			'Content-Type': 'application/json',
-  //     }
-  // 	}
-  //   );
-  // },
+  setTyping: function setTyping(status) {
+    return axios.post(_config_js__WEBPACK_IMPORTED_MODULE_0__["SYSTEM_CONFIG"].API_URL + '/api/typing', {
+      status: status
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      }
+    });
+  },
   getAuth: function getAuth() {
     return axios.get(_config_js__WEBPACK_IMPORTED_MODULE_0__["SYSTEM_CONFIG"].API_URL + '/api/user', {
       headers: {
@@ -43216,7 +43250,8 @@ __webpack_require__.r(__webpack_exports__);
 
 var Auth = {
   state: {
-    Auth: []
+    Auth: [],
+    isTyping: false
   },
   actions: {
     // Mengambil data dari seluruh pesan
@@ -43227,16 +43262,44 @@ var Auth = {
       }).catch(function () {
         commit('setAuth', []);
       });
+    },
+    typing: function typing(_ref2, data) {
+      var commit = _ref2.commit,
+          state = _ref2.state,
+          dispatch = _ref2.dispatch;
+      var status;
+
+      if (data.val !== '') {
+        // status = 1
+        if (state.isTyping) {
+          console.log("uada adah");
+          return true;
+        }
+
+        commit('setIsTyping', true);
+      } else {
+        commit('setIsTyping', false); // status = 0
+      }
+
+      _api_auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].setTyping(status).then(function (response) {}).catch(function () {
+        commit('setIsTyping', false);
+      });
     }
   },
   mutations: {
     setAuth: function setAuth(state, data) {
       state.Auth = data;
+    },
+    setIsTyping: function setIsTyping(state, data) {
+      state.isTyping = data;
     }
   },
   getters: {
     getAuth: function getAuth(state) {
       return state.Auth;
+    },
+    getIsTyping: function getIsTyping(state) {
+      return state.isTyping;
     }
   }
 };

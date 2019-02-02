@@ -313,6 +313,10 @@ body {
 	}
   .write-form {
     height: 150px;
+    span{
+      margin-left: 30px;
+      display: block;
+    }
     textarea {
       height: 75px;
       margin: 17px 5%;
@@ -337,16 +341,17 @@ body {
     display: inline-block;
   }
   .send {
-    color: #7ac5ef;
-    text-transform: uppercase;
-    font-weight: 700;
-    float: right;
-    margin-right: 5%;
+    background-color: #44c767;
+    border-radius: 28px;
+    border: 1px solid #18ab29;
+    display: inline-block;
     cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 15px;
+    padding: 5px 25px;
+    text-decoration: none;
+    text-shadow: 0px 1px 0px #2f6627;
   }
   i {
     &.fa-file-o {
